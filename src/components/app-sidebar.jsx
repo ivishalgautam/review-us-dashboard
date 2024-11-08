@@ -20,11 +20,11 @@ import Link from "next/link";
 export function AppSidebar({ ...props }) {
   const { user } = React.useContext(MainContext);
   const filteredRoutes = sidebarData
-    .filter((route) => route.roles.includes(user.role))
+    .filter((route) => route.roles.includes(user?.role))
     .map((item) => {
       return {
         ...item,
-        items: item.items.filter((item) => item.roles.includes(user.role)),
+        items: item.items.filter((item) => item.roles.includes(user?.role)),
       };
     });
 

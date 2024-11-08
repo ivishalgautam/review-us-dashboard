@@ -1,4 +1,4 @@
-import { BookOpen, Bot, LayoutDashboard } from "lucide-react";
+import { Bot, FileText, LayoutDashboard, User } from "lucide-react";
 
 const ROLES = {
   ADMIN: "admin",
@@ -34,7 +34,7 @@ export const sidebarData = [
   {
     title: "Reviews",
     url: "#",
-    icon: BookOpen,
+    icon: FileText,
     roles: [ROLES.USER],
     items: [
       {
@@ -47,7 +47,7 @@ export const sidebarData = [
   {
     title: "Profile Overview",
     url: "/profile",
-    icon: LayoutDashboard,
+    icon: User,
     roles: [ROLES.USER],
     items: [],
   },

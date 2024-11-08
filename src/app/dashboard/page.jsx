@@ -4,10 +4,8 @@ import { Heading } from "@/components/ui/heading";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import { useQuery } from "@tanstack/react-query";
-import { FaChalkboardTeacher } from "react-icons/fa";
-import { PiStudentBold } from "react-icons/pi";
-import { BiCategory } from "react-icons/bi";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Star } from "lucide-react";
 
 const getReports = async () => {
   return (await http().get(`${endpoints.reports.getAll}`)) ?? {};
@@ -24,6 +22,7 @@ export default function Home() {
     queryFn: getReports,
   });
 
+  console.log({ isReportLoading, isReportError, reportError });
   return (
     <PageContainer className={"space-y-4 bg-white"}>
       <Heading title={"Dashboard"} description={"Dashboard reports"} />
@@ -41,7 +40,7 @@ export default function Home() {
 }
 
 function Reports({ data, isError, isLoading, error }) {
-  if (isLoading) <Skelotons />;
+  if (isLoading) return <Skelotons />;
   if (isError) return error?.message ?? "Error fetching reports";
   const size = 25;
   return (
@@ -49,17 +48,17 @@ function Reports({ data, isError, isLoading, error }) {
       <Card
         count={data?.last_month}
         title="Last Month Reviews"
-        icon={<FaChalkboardTeacher size={size} className="text-primary" />}
+        icon={<Star size={size} className="text-primary" />}
       />
       <Card
         count={data?.curr_month}
         title="Current Month Reviews"
-        icon={<PiStudentBold size={size} className="text-primary" />}
+        icon={<Star size={size} className="text-primary" />}
       />
       <Card
         count={data?.total}
         title="Overall Reviews"
-        icon={<BiCategory size={size} className="text-primary" />}
+        icon={<Star size={size} className="text-primary" />}
       />
     </GridContainer>
   );
@@ -75,7 +74,7 @@ function GridContainer({ children }) {
 
 function Card({ count = 0, title = "", icon = "" }) {
   return (
-    <div className="bg-primary-light flex items-center justify-start gap-2 rounded-lg border p-4 py-3">
+    <div className="flex items-center justify-start gap-2 rounded-lg border bg-gray-100 p-4 py-3">
       <div className="rounded-full border bg-white p-3">{icon}</div>
       <div className="flex flex-col items-start justify-start">
         <span className="text-xs font-medium tracking-wide">{title}</span>
@@ -85,8 +84,12 @@ function Card({ count = 0, title = "", icon = "" }) {
   );
 }
 
-function Skelotons({ length = 4 }) {
-  return Array.from({ length }).map((_, key) => (
-    <Skeleton className={"h-[74.6px] bg-gray-200"} key={key} />
-  ));
+function Skelotons({ length = 3 }) {
+  return (
+    <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,1fr))] gap-4">
+      {Array.from({ length }).map((_, key) => (
+        <Skeleton className={"h-[74.6px] bg-gray-200"} key={key} />
+      ))}
+    </div>
+  );
 }

@@ -28,7 +28,7 @@ function Context({ children }) {
     if (!["/login", "/signup", "/verify"].includes(pathname)) fetchData();
   }, [pathname]);
 
-  if (isUserLoading) return <Spinner />;
+  // if (isUserLoading) return <Spinner />;
 
   return (
     <MainContext.Provider

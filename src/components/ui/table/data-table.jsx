@@ -62,7 +62,6 @@ export function DataTable({
   };
 
   const pageCount = Math.ceil(totalItems / pageSize);
-  console.log({ pageCount });
   const handlePaginationChange = (updaterOrValue) => {
     const pagination =
       typeof updaterOrValue === "function"

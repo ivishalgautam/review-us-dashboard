@@ -18,16 +18,33 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export function NavMain({ items }) {
+  const pathname = usePathname();
+  console.log({ pathname });
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
+          <Collapsible
+            key={item.title}
+            asChild
+            defaultOpen={item.items?.some((item) => item.url === pathname)}
+          >
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.title}>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                className={cn({
+                  "bg-white text-black":
+                    pathname.includes(item.url) ||
+                    item.items?.some((item) => item.url === pathname),
+                })}
+              >
                 <Link href={item.url}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
@@ -35,7 +52,14 @@ export function NavMain({ items }) {
               </SidebarMenuButton>
               {item.items?.length ? (
                 <>
-                  <CollapsibleTrigger asChild>
+                  <CollapsibleTrigger
+                    asChild
+                    className={cn({
+                      "bg-black/5 text-black":
+                        pathname.includes(item.url) ||
+                        item.items?.some((item) => item.url === pathname),
+                    })}
+                  >
                     <SidebarMenuAction className="data-[state=open]:rotate-90">
                       <ChevronRight />
                       <span className="sr-only">Toggle</span>
@@ -45,7 +69,14 @@ export function NavMain({ items }) {
                     <SidebarMenuSub>
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
+                          <SidebarMenuSubButton
+                            className={cn({
+                              "bg-white text-black": pathname.includes(
+                                subItem.url,
+                              ),
+                            })}
+                            asChild
+                          >
                             <Link href={subItem.url}>
                               <span>{subItem.title}</span>
                             </Link>
