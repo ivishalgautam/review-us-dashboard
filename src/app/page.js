@@ -1,3 +1,10 @@
+import BusinessLoginForm from "@/components/forms/business-login";
+import AuthLayout from "@/components/layout/auth-layout";
+
 export default function Home() {
-  return <div className="">hello</div>;
+  return (
+    <AuthLayout>
+      <BusinessLoginForm />
+    </AuthLayout>
+  );
 }

@@ -13,7 +13,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 243 80% 62%;
+    --primary: 221 100% 63%;
+    --primary-dark: 230 100% 63%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 215 76% 15%;
@@ -34,7 +35,7 @@
 
     --radius: 0.5rem;
 
-    --sidebar-background: 243 80% 62%;
+    --sidebar-background: 221 100% 63%;
 
     --sidebar-foreground: 0 0% 100%;
 

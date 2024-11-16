@@ -5,7 +5,9 @@ import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star } from "lucide-react";
+import { Star, User } from "lucide-react";
+import { useContext } from "react";
+import { MainContext } from "@/store/context";
 
 const getReports = async () => {
   return (await http().get(`${endpoints.reports.getAll}`)) ?? {};
@@ -22,11 +24,9 @@ export default function Home() {
     queryFn: getReports,
   });
 
-  console.log({ isReportLoading, isReportError, reportError });
   return (
     <PageContainer className={"space-y-4 bg-white"}>
       <Heading title={"Dashboard"} description={"Dashboard reports"} />
-
       <Reports
         {...{
           data: report,
@@ -40,25 +40,52 @@ export default function Home() {
 }
 
 function Reports({ data, isError, isLoading, error }) {
-  if (isLoading) return <Skelotons />;
+  const { user, isUserLoading } = useContext(MainContext);
+
+  if (isLoading || isUserLoading) return <Skelotons />;
   if (isError) return error?.message ?? "Error fetching reports";
+
   const size = 25;
   return (
     <GridContainer>
       <Card
         count={data?.last_month}
-        title="Last Month Reviews"
-        icon={<Star size={size} className="text-primary" />}
+        title={
+          user.role === "admin" ? "Last Month Users" : "Last Month Reviews"
+        }
+        icon={
+          user.role === "admin" ? (
+            <User size={size} className="text-primary" />
+          ) : (
+            <Star size={size} className="text-primary" />
+          )
+        }
       />
       <Card
         count={data?.curr_month}
-        title="Current Month Reviews"
-        icon={<Star size={size} className="text-primary" />}
+        title={
+          user.role === "admin"
+            ? "Current Month Users"
+            : "Current Month Reviews"
+        }
+        icon={
+          user.role === "admin" ? (
+            <User size={size} className="text-primary" />
+          ) : (
+            <Star size={size} className="text-primary" />
+          )
+        }
       />
       <Card
         count={data?.total}
-        title="Overall Reviews"
-        icon={<Star size={size} className="text-primary" />}
+        title={user.role === "admin" ? "Overall Users" : "Overall Reviews"}
+        icon={
+          user.role === "admin" ? (
+            <User size={size} className="text-primary" />
+          ) : (
+            <Star size={size} className="text-primary" />
+          )
+        }
       />
     </GridContainer>
   );

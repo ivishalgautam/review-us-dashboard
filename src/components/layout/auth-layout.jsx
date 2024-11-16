@@ -2,25 +2,24 @@ import Image from "next/image";
 
 export default function AuthLayout({ children }) {
   return (
-    <section className="bg-gray-200 py-16">
-      <div className="container">
-        <div className="mx-auto grid w-full grid-cols-1 overflow-hidden rounded-lg bg-white shadow-lg lg:max-w-[40%]">
-          {/* left */}
-          {/* <div className="flex h-auto flex-1 items-center justify-center bg-secondary py-0 lg:py-16">
-            <figure>
-              <Image
-                src={"/jcb-login-side.png"}
-                width={500}
-                height={500}
-                alt="jcb"
-              />
-            </figure>
-          </div> */}
+    <section className="bg-gray-200">
+      <div className="mx-auto grid h-full min-h-screen w-full bg-white md:grid-cols-12">
+        {/* left */}
+        <div className="flex h-auto flex-1 items-center justify-center bg-gray-200 py-0 md:col-span-8 lg:py-16">
+          <figure>
+            <Image
+              src={"/login.svg"}
+              width={500}
+              height={500}
+              alt="jcb"
+              className="scale-125"
+            />
+          </figure>
+        </div>
 
-          {/* right */}
-          <div className="flex flex-1 items-center justify-start pb-8">
-            {children}
-          </div>
+        {/* right */}
+        <div className="mx-auto flex items-center justify-center md:col-span-4">
+          {children}
         </div>
       </div>
     </section>

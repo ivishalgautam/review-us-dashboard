@@ -34,7 +34,7 @@ export default function AdminLoginForm() {
       localStorage.setItem("user", JSON.stringify(response.user_data));
       localStorage.setItem("token", response.token);
       localStorage.setItem("refreshToken", response.refresh_token);
-      router.push("/");
+      router.push("/dashboard");
       toast.success("Logged in.");
       return response.data;
     } catch (error) {

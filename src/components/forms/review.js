@@ -125,7 +125,7 @@ export default function ReviewForm({ businessId, businessLink }) {
               {...register("name", {
                 required: "required*",
               })}
-              placeholder="Enter Your business name"
+              placeholder="Enter Your Name"
             />
             {errors.name && (
               <span className="text-red-500">{errors.name.message}</span>
@@ -175,10 +175,10 @@ export default function ReviewForm({ businessId, businessLink }) {
 
           <div className="!mt-6 text-end">
             <Button
-              className="rounded-full px-12 py-6"
+              className="w-full rounded-full"
               disabled={reviewCreateMutation.isLoading}
             >
-              Register
+              Submithfjhf
               {reviewCreateMutation.isLoading && (
                 <span className="ml-2 h-5 w-5 animate-spin rounded-full border-4 border-white/30 border-t-white"></span>
               )}

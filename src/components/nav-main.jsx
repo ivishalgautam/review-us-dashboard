@@ -23,7 +23,6 @@ import { cn } from "@/lib/utils";
 
 export function NavMain({ items }) {
   const pathname = usePathname();
-  console.log({ pathname });
 
   return (
     <SidebarGroup>

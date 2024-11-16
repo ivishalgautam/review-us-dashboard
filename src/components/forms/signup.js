@@ -15,9 +15,11 @@ import PhoneInputWithCountrySelect, {
   parsePhoneNumber,
 } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const {
     control,
@@ -41,6 +43,8 @@ export default function SignUpForm() {
         data,
       );
 
+      toast.success("Registered successfull, Please check your email.");
+      router.push("/");
       return response.data;
     } catch (error) {
       // console.log(error);
@@ -65,7 +69,6 @@ export default function SignUpForm() {
       mobile_number: nationalNumber,
       country_code: countryCallingCode,
     };
-    console.log({ payload });
     await signUp(payload);
   };
   return (
@@ -153,18 +156,15 @@ export default function SignUpForm() {
           </div>
 
           <div className="!mt-6 text-end">
-            <Button className="rounded-full px-12 py-6">
-              {loading && (
-                <span className="mr-3 h-5 w-5 animate-spin rounded-full border-4 border-white/30 border-t-white"></span>
-              )}
-              Register
+            <Button className="w-full rounded-full" disabled={loading}>
+              {loading ? "Generating business card..." : "Register"}
             </Button>
           </div>
 
           <div className="translate-y-4">
             <P className={"text-center text-sm font-medium tracking-wide"}>
               Already have an account?{" "}
-              <Link href={"/login"} className="text-primary">
+              <Link href={"/"} className="text-primary">
                 Login
               </Link>
             </P>

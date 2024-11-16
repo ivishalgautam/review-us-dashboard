@@ -24,11 +24,11 @@ export const sidebarData = [
         url: "/users",
         roles: [ROLES.ADMIN],
       },
-      {
-        title: "Create",
-        url: "/users/create",
-        roles: [ROLES.ADMIN],
-      },
+      // {
+      //   title: "Create",
+      //   url: "/users/create",
+      //   roles: [ROLES.ADMIN],
+      // },
     ],
   },
   {
@@ -54,9 +54,10 @@ export const sidebarData = [
 ];
 
 export const publicRoutes = [
-  "/login/user",
-  "/login/admin",
+  "/",
+  "/admin",
   "/register",
   "/reviews/create",
   "/thank-you",
+  "/progress",
 ];

@@ -30,11 +30,10 @@ export default function BusinessLoginForm() {
         `${endpoints.auth.login}/business`,
         credentials,
       );
-      console.log({ response });
       localStorage.setItem("user", JSON.stringify(response.user_data));
       localStorage.setItem("token", response.token);
       localStorage.setItem("refreshToken", response.refresh_token);
-      router.push("/");
+      router.push("/dashboard");
       toast.success("Logged in.");
       return response.data;
     } catch (error) {
@@ -65,7 +64,7 @@ export default function BusinessLoginForm() {
                 required: "required",
               })}
               placeholder="Enter Your Mobile Number"
-              className="mt-2 rounded-full bg-gray-100 px-4 py-6"
+              className="mt-1 rounded-full bg-gray-100 px-4 py-6"
             />
           </div>
 
@@ -78,12 +77,12 @@ export default function BusinessLoginForm() {
                 required: "required",
               })}
               placeholder="Enter your password"
-              className="mt-2 rounded-full bg-gray-100 px-4 py-6"
+              className="mt-1 rounded-full bg-gray-100 px-4 py-6"
             />
           </div>
 
-          <div className="text-end">
-            <Button className="rounded-full px-12 py-6">
+          <div className="!mt-6 text-end">
+            <Button className="w-full rounded-full px-12 py-6">
               {loading && (
                 <span className="mr-3 h-5 w-5 animate-spin rounded-full border-4 border-white/30 border-t-white"></span>
               )}
