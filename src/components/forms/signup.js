@@ -43,7 +43,7 @@ export default function SignUpForm() {
         data,
       );
 
-      toast.success("Registered successfull, Please check your email.");
+      toast.success("Registered successfully, Please check your email.");
       router.push("/");
       return response.data;
     } catch (error) {
