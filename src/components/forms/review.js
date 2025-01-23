@@ -19,8 +19,17 @@ import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { parseAsString, useQueryState } from "nuqs";
 
-export default function ReviewForm({ businessId, businessLink }) {
+export default function ReviewForm() {
+  const [businessId, setBusinessId] = useQueryState(
+    "businessId",
+    parseAsString.withDefault(""),
+  );
+  const [businessLink, setBusinessLink] = useQueryState(
+    "businessLink",
+    parseAsString.withDefault(""),
+  );
   const router = useRouter();
   const {
     control,
@@ -68,7 +77,6 @@ export default function ReviewForm({ businessId, businessLink }) {
       rating: data.rating,
       body: data.body,
     };
-    console.log({ payload });
     reviewCreateMutation.mutate(payload);
   };
 
@@ -178,7 +186,7 @@ export default function ReviewForm({ businessId, businessLink }) {
               className="w-full rounded-full"
               disabled={reviewCreateMutation.isLoading}
             >
-              Submithfjhf
+              Submit
               {reviewCreateMutation.isLoading && (
                 <span className="ml-2 h-5 w-5 animate-spin rounded-full border-4 border-white/30 border-t-white"></span>
               )}
