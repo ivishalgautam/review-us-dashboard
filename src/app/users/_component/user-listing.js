@@ -12,6 +12,7 @@ import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 import {
   deleteUser,
   fetchUsers,
+  updatePaymentStatus,
   updateUser,
   updateUserStatus,
 } from "@/server/users";
@@ -56,6 +57,15 @@ export default function UserListing() {
       console.log(error);
     }
   }
+  async function handlePaymentStatus(customerId, status) {
+    try {
+      const response = await updatePaymentStatus(customerId, status);
+      toast.success(response?.message ?? "Status changed");
+      queryClient.invalidateQueries(["users"]);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const updateMutation = useMutation({
     mutationFn: (data) => updateUser(data, userId),
@@ -90,8 +100,12 @@ export default function UserListing() {
   return (
     <div className="w-full rounded-lg border-input">
       <DataTable
-        columns={columns(handleDelete, handleUserStatus, setUserId, () =>
-          setIsModal(true),
+        columns={columns(
+          handleDelete,
+          handleUserStatus,
+          handlePaymentStatus,
+          setUserId,
+          () => setIsModal(true),
         )}
         data={data.data}
         totalItems={data.total}

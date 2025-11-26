@@ -70,9 +70,8 @@ export function NavMain({ items }) {
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton
                             className={cn({
-                              "bg-white text-black": pathname.includes(
-                                subItem.url,
-                              ),
+                              "bg-white text-black":
+                                pathname === subItem.url.split("?")[0],
                             })}
                             asChild
                           >

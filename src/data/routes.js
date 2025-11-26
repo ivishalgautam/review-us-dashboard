@@ -24,11 +24,11 @@ export const sidebarData = [
         url: "/users",
         roles: [ROLES.ADMIN],
       },
-      // {
-      //   title: "Create",
-      //   url: "/users/create",
-      //   roles: [ROLES.ADMIN],
-      // },
+      {
+        title: "Create",
+        url: "/users/create",
+        roles: [ROLES.ADMIN],
+      },
     ],
   },
   {

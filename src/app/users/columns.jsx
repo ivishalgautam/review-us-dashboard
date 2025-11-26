@@ -13,25 +13,27 @@ import {
 
 import moment from "moment";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const columns = (
   handleDelete,
   handleUserStatus,
+  handlePaymentStatus,
   setUserId,
   openModal,
 ) => [
   {
     accessorKey: "mobile_number",
-    header: "PHONE",
+    header: "Phone",
   },
   {
     accessorKey: "email",
-    header: "EMAIL",
+    header: "Email",
   },
   {
     accessorKey: "is_active",
     header: ({ column }) => {
-      return <Button variant="ghost">STATUS</Button>;
+      return <Button variant="ghost">Status</Button>;
     },
     cell: ({ row }) => {
       const is_active = row.getValue("is_active");
@@ -50,9 +52,34 @@ export const columns = (
     },
   },
   {
+    accessorKey: "is_payment_received",
+    header: ({ column }) => {
+      return <Button variant="ghost">Payment</Button>;
+    },
+    cell: ({ row }) => {
+      const is_payment_received = row.getValue("is_payment_received");
+      const id = row.original.id;
+      return (
+        <div className="flex items-center justify-start gap-2">
+          <Switch
+            checked={is_payment_received}
+            onCheckedChange={() =>
+              handlePaymentStatus(id, !is_payment_received)
+            }
+          />
+          <Small
+            className={is_payment_received ? "text-green-500" : "text-red-500"}
+          >
+            {is_payment_received ? "Received" : "Not received"}
+          </Small>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "created_at",
     header: ({ column }) => {
-      return <Button variant="ghost">REGISTERED ON</Button>;
+      return <Button variant="ghost">Registered On</Button>;
     },
     cell: ({ row }) => {
       return (
@@ -77,13 +104,8 @@ export const columns = (
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                setUserId(id);
-                openModal();
-              }}
-            >
-              Edit
+            <DropdownMenuItem>
+              <Link href={`/users/${id}/edit`}>Edit</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleDelete({ id })}>

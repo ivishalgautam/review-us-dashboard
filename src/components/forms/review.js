@@ -62,7 +62,8 @@ export default function ReviewForm() {
       return response.data;
     },
     onSuccess: (data) => {
-      router.replace("/thank-you");
+      if (rating > 3) window.location.href = businessLink;
+      else router.replace("/thank-you");
     },
     onError: (error) => {
       toast.error(error?.message || "Error submitting review.");
@@ -80,11 +81,11 @@ export default function ReviewForm() {
     reviewCreateMutation.mutate(payload);
   };
 
-  useEffect(() => {
-    if (rating > 3) {
-      window.location.href = businessLink;
-    }
-  }, [rating, businessLink]);
+  // useEffect(() => {
+  //   if (rating > 3) {
+  //     window.location.href = businessLink;
+  //   }
+  // }, [rating, businessLink]);
 
   useEffect(() => {
     if (business) {
@@ -168,18 +169,20 @@ export default function ReviewForm() {
           </div>
 
           {/* thoughts */}
-          <div>
-            <Label>Your Thoughts</Label>
-            <Textarea
-              {...register("body", {
-                required: "required*",
-              })}
-              placeholder="Enter Your Thoughts"
-            />
-            {errors.body && (
-              <span className="text-red-500">{errors.body.message}</span>
-            )}
-          </div>
+          {rating <= 3 && (
+            <div>
+              <Label>Your Thoughts</Label>
+              <Textarea
+                {...register("body", {
+                  required: "required*",
+                })}
+                placeholder="Enter Your Thoughts"
+              />
+              {errors.body && (
+                <span className="text-red-500">{errors.body.message}</span>
+              )}
+            </div>
+          )}
 
           <div className="!mt-6 text-end">
             <Button

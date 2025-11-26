@@ -18,6 +18,14 @@ export async function updateUserStatus(customerId, status) {
     is_active: status,
   });
 }
+export async function updatePaymentStatus(customerId, status) {
+  return await http().put(
+    `${endpoints.users.getAll}/payment-status/${customerId}`,
+    {
+      is_payment_received: status,
+    },
+  );
+}
 
 export async function fetchTutor(tutorId) {
   const { record } = await http().get(`${endpoints.users.getAll}/${tutorId}`);

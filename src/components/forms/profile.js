@@ -1,14 +1,12 @@
 "use client";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { H2 } from "../ui/typography";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button, buttonVariants } from "../ui/button";
-
 import { useForm } from "react-hook-form";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import "react-phone-number-input/style.css";
 import { MainContext } from "@/store/context";
 import { Download } from "lucide-react";
 import Image from "next/image";
@@ -17,17 +15,14 @@ import { Skeleton } from "../ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 
 export default function ProfileForm({ type }) {
-  const [loading, setLoading] = useState(false);
-  const { user, isUserLoading } = useContext(MainContext);
-  const imageRef = useRef(null);
+  const { user } = useContext(MainContext);
 
   const {
-    control,
     register,
     handleSubmit,
-    formState: { errors },
     setValue,
     watch,
+    formState: { errors },
   } = useForm({
     defaultValues: {
       business_name: "",
@@ -37,145 +32,116 @@ export default function ProfileForm({ type }) {
     },
   });
 
+  // --- Fetch business info
   const { data: business, isLoading: isBusinessLoading } = useQuery({
-    queryKey: [`business`],
-    queryFn: async () => {
-      return await http().get(endpoints.business.profile);
-    },
+    queryKey: ["business"],
+    queryFn: () => http().get(endpoints.business.profile),
   });
 
+  // --- Fetch QR (PNG)
   const { data: qr, isLoading: isQRLoading } = useQuery({
-    queryKey: [`qr`],
-    queryFn: async () => {
-      return await http().get(endpoints.reviews.getQRCode);
-    },
+    queryKey: ["qr"],
+    queryFn: () => http().get(endpoints.reviews.getQRCode),
   });
 
+  // --- Fetch PDF (binary)
+  const { data: pdfData, isLoading: isPdfLoading } = useQuery({
+    queryKey: ["pdf"],
+    queryFn: async () => {
+      const response = await http().get(endpoints.reviews.getQRCode, {
+        responseType: "arraybuffer",
+      });
+      return response;
+    },
+  });
+  console.log({ pdfData });
+  // Convert PDF buffer → Blob URL
+  const [pdfUrl, setPdfUrl] = useState(null);
   useEffect(() => {
-    if (business) {
-      setValue("business_link", business.business_link);
-      setValue("business_name", business.business_name);
-      user && setValue("email", user.email);
-      user && setValue("mobile_number", user.mobile_number);
-    }
+    if (!pdfData) return;
+    const blob = new Blob([pdfData], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    setPdfUrl(url);
+    return () => URL.revokeObjectURL(url); // cleanup
+  }, [pdfData]);
 
-    if (qr) {
-      setValue("qr", `data:image/png;base64,${qr}`);
-    }
-  }, [business, qr, setValue, user]);
+  // Populate form when data loads
+  useEffect(() => {
+    if (!business) return;
+    setValue("business_name", business.business_name);
+    setValue("business_link", business.business_link);
+    user && setValue("email", user.email);
+    user && setValue("mobile_number", user.mobile_number);
+    qr && setValue("qr", `data:image/png;base64,${qr}`);
+  }, [business, user, qr, setValue]);
 
-  const onSubmit = (data) => {};
-  const QrBase64 = watch("qr");
-  console.log({ QrBase64 });
+  const qrImage = watch("qr");
+
+  // Download handler
+  const handleDownloadPdf = () => {
+    if (!pdfUrl) return;
+    const a = document.createElement("a");
+    a.href = pdfUrl;
+    a.download = `${watch("business_name")}-review-card.pdf`;
+    a.click();
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="flex items-center justify-center">
-          {isQRLoading ? (
-            <Skeleton className="aspect-portrait w-[300px] rounded-lg bg-gray-200" />
-          ) : (
-            <Image
-              src={QrBase64}
-              width={300}
-              height={300}
-              alt={"Qr"}
-              className="rounded-lg"
+    <form onSubmit={handleSubmit(() => {})} className="w-full">
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* LEFT SIDE: QR + PDF preview + download button */}
+        <div className="flex flex-col items-center gap-4">
+          {/* PDF viewer */}
+          {isPdfLoading ? (
+            <Skeleton className="h-[400px] w-[300px]" />
+          ) : pdfUrl ? (
+            <iframe
+              src={pdfUrl}
+              className="h-[620px] w-[400px] rounded-lg border"
             />
-          )}
+          ) : null}
         </div>
 
-        {isBusinessLoading ? (
-          <Skeleton className={"w-full bg-gray-200"} />
-        ) : (
-          <div className="flex items-center justify-start rounded-lg bg-white p-8 drop-shadow-sm">
-            <div className="w-full space-y-2">
-              <div className="relative mb-8">
-                <H2 className={"text-center"}>Profile Overview</H2>
-              </div>
+        {/* RIGHT SIDE: FORM */}
+        <div className="space-y-4 rounded-lg bg-white p-8 drop-shadow-sm">
+          <H2 className="mb-4 text-center">Profile Overview</H2>
 
-              {/* name */}
-              <div>
-                <Label>Business Name</Label>
-                <Input
-                  {...register("business_name", {
-                    required: "required*",
-                  })}
-                  placeholder="Enter Your business name"
-                  className="bg-gray-100"
-                  disabled={type === "edit"}
-                />
-                {errors.business_name && (
-                  <span className="text-red-500">
-                    {errors.business_name.message}
-                  </span>
-                )}
-              </div>
-
-              {/* email */}
-              <div>
-                <Label>Email</Label>
-                <Input
-                  {...register("email", {
-                    required: "required*",
-                  })}
-                  placeholder="Enter Your Email"
-                  className="bg-gray-100"
-                  disabled={type === "edit"}
-                />
-                {errors.email && (
-                  <span className="text-red-500">{errors.email.message}</span>
-                )}
-              </div>
-
-              {/* business link */}
-              <div>
-                <Label>Business Link</Label>
-                <Input
-                  {...register("business_link", {
-                    required: "required*",
-                  })}
-                  placeholder="Enter Your business link"
-                  className="bg-gray-100"
-                  disabled={type === "edit"}
-                />
-                {errors.business_link && (
-                  <span className="text-red-500">
-                    {errors.business_link.message}
-                  </span>
-                )}
-              </div>
-
-              {/* username */}
-              <div>
-                <Label>Username</Label>
-                <Input
-                  type="number"
-                  {...register("mobile_number", {
-                    required: "required",
-                    valueAsNumber: true,
-                  })}
-                  disabled={type === "edit"}
-                />
-                {errors.mobile_number && (
-                  <span className="text-red-500">
-                    {errors.mobile_number.message}
-                  </span>
-                )}
-              </div>
-
-              <div className="!mt-6 text-start">
-                <a
-                  href={QrBase64}
-                  download={`${watch("business_name")}.png`}
-                  className={cn("w-full", buttonVariants({}))}
-                >
-                  Download QR Code <Download className="ml-1" />
-                </a>
-              </div>
-            </div>
+          <div>
+            <Label>Business Name</Label>
+            <Input
+              disabled={type === "edit"}
+              {...register("business_name", { required: "required*" })}
+            />
+            {errors.business_name && (
+              <p className="text-red-500">{errors.business_name.message}</p>
+            )}
           </div>
-        )}
+
+          <div>
+            <Label>Email</Label>
+            <Input
+              disabled={type === "edit"}
+              {...register("email", { required: "required*" })}
+            />
+          </div>
+
+          <div>
+            <Label>Business Link</Label>
+            <Input
+              disabled={type === "edit"}
+              {...register("business_link", { required: "required*" })}
+            />
+          </div>
+
+          <div>
+            <Label>Phone</Label>
+            <Input
+              disabled={type === "edit"}
+              type="number"
+              {...register("mobile_number")}
+            />
+          </div>
+        </div>
       </div>
     </form>
   );

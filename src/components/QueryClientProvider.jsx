@@ -11,8 +11,8 @@ export default function QueryProvider({ children }) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: 2,
-        refetchOnWindowFocus: true,
+        retry: 0,
+        refetchOnWindowFocus: false,
         queryCache: new QueryCache({
           onError: (error, query) => {
             // 🎉 only show error toasts if we already have data in the cache

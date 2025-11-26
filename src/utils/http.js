@@ -76,25 +76,33 @@ const http = (headerType = "json", baseURL = API_ROOT) => {
     }
   }
 
-  function get(path) {
-    return client.get(path).then((response) => response.data);
+  async function get(path, config = {}) {
+    return client.get(path, config).then((response) => response.data);
   }
 
-  function post(path, payload) {
-    return client.post(path, payload).then((response) => {
+  async function post(path, payload, isFormData = false) {
+    let config = {};
+    if (isFormData) {
+      config.headers = { "Content-Type": "multipart/form-data" };
+    }
+    return client.post(path, payload, config).then((response) => {
       return response.data;
     });
   }
 
-  function put(path, payload) {
-    return client.put(path, payload).then((response) => response.data);
+  async function put(path, payload, isFormData = false) {
+    let config = {};
+    if (isFormData) {
+      config.headers = { "Content-Type": "multipart/form-data" };
+    }
+    return client.put(path, payload, config).then((response) => response.data);
   }
 
-  function patch(path, payload) {
+  async function patch(path, payload) {
     return client.patch(path, payload).then((response) => response.data);
   }
 
-  function _delete(path, data) {
+  async function _delete(path, data) {
     if (data) {
       return client
         .delete(path, { data: data })
