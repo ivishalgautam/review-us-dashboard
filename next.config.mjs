@@ -9,7 +9,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "api.infrakeys.com",
+        hostname: "api.ninjarankers.com",
         port: "",
       },
     ],
